@@ -1,5 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Home() {
-  return <Button>Hello</Button>;
+  return (
+    <div className="p-6">
+      <Textarea placeholder="Type something..." className="mb-4" />
+    </div>
+  );
 }
