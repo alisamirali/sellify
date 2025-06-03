@@ -4,6 +4,7 @@ import { SubcategoryMenu } from "@/components/search-filters/sub-category-menu";
 import { Button } from "@/components/ui/button";
 import { useDropdownPosition } from "@/hooks/use-dropdown-position";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -40,10 +41,14 @@ export function CategoryDropdown({
           variant="elevated"
           className={cn(
             "h-11 px-4 bg-transparent border-transparent rounded-full hover:bg-white hover:border-primary text-black",
-            isActive && !isNavigationHovered && "bg-white border-primary"
+            isActive && !isNavigationHovered && "bg-white border-primary",
+            isOpened &&
+              "bg-white border-primary shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -translate-x-[4px] -translate-y-[4px]"
           )}
         >
-          {category.name}
+          <Link href={`/${category.slug === "all" ? "" : category.slug}`}>
+            {category.name}
+          </Link>
         </Button>
 
         {category.subcategories && category.subcategories.length > 0 && (

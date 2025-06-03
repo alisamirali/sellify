@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 
-export const Categories: CollectionConfig = {
+const Categories: CollectionConfig = {
   slug: "categories",
   fields: [
     {
@@ -34,3 +34,5 @@ export const Categories: CollectionConfig = {
     },
   ],
 };
+
+export default Categories;
