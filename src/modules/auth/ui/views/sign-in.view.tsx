@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,7 +31,22 @@ export function SignInView() {
   const router = useRouter();
 
   const trpc = useTRPC();
-  const login = useMutation(trpc.auth.login.mutationOptions());
+  const queryClient = useQueryClient();
+
+  const login = useMutation(
+    trpc.auth.login.mutationOptions({
+      onSuccess: async () => {
+        form.reset();
+
+        await queryClient.invalidateQueries(trpc.auth.session.queryFilter());
+
+        router.push("/");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    })
+  );
 
   const form = useForm<z.infer<typeof loginSchema>>({
     mode: "all",
@@ -43,15 +58,7 @@ export function SignInView() {
   });
 
   const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    login.mutate(values, {
-      onSuccess: () => {
-        form.reset();
-        router.push("/");
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    });
+    login.mutate(values);
   };
 
   return (
