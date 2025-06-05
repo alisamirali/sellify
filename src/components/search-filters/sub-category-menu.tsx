@@ -1,12 +1,12 @@
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import Link from "next/link";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function SubcategoryMenu({
   category,
   isOpened,
   position,
 }: {
-  category: any;
+  category: CategoriesGetManyOutput[1];
   isOpened: boolean;
   position: { top: number; left: number };
 }) {
@@ -36,15 +36,17 @@ export function SubcategoryMenu({
         }}
       >
         <div>
-          {category.subcategories?.map((subcategory: any) => (
-            <Link
-              key={subcategory.slug}
-              href={`/${category.slug}/${subcategory.slug}`}
-              className="w-full text-left py-3 px-4 hover:bg-black hover:text-white flex justify-between items-center underline font-medium"
-            >
-              {subcategory.name}
-            </Link>
-          ))}
+          {category.subcategories?.map(
+            (subcategory: CategoriesGetManyOutput[1]) => (
+              <Link
+                key={subcategory.slug}
+                href={`/${category.slug}/${subcategory.slug}`}
+                className="w-full text-left py-3 px-4 hover:bg-black hover:text-white flex justify-between items-center underline font-medium"
+              >
+                {subcategory.name}
+              </Link>
+            )
+          )}
         </div>
       </div>
     </div>

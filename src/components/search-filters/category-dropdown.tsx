@@ -4,16 +4,16 @@ import { SubcategoryMenu } from "@/components/search-filters/sub-category-menu";
 import { Button } from "@/components/ui/button";
 import { useDropdownPosition } from "@/hooks/use-dropdown-position";
 import { cn } from "@/lib/utils";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export function CategoryDropdown({
   category,
   isActive,
   isNavigationHovered,
 }: {
-  category: any;
+  category: CategoriesGetManyOutput[1];
   isActive: boolean;
   isNavigationHovered: boolean;
 }) {

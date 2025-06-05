@@ -4,11 +4,11 @@ import { CategoriesSidebar } from "@/components/search-filters/categories-sideba
 import { CategoryDropdown } from "@/components/search-filters/category-dropdown";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
 import { ListFilterIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-export function Categories({ data }: { data: any }) {
+export function Categories({ data }: { data: CategoriesGetManyOutput }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
   const viewAllRef = useRef<HTMLDivElement>(null);
@@ -19,7 +19,7 @@ export function Categories({ data }: { data: any }) {
 
   const activeCategory = "all";
   const activeCategoryIndex = data.findIndex(
-    (category: any) => category.slug === activeCategory
+    (category: CategoriesGetManyOutput[1]) => category.slug === activeCategory
   );
   const isActiveCategoryHidden =
     activeCategoryIndex >= visibleCount && activeCategoryIndex !== -1;
@@ -57,11 +57,7 @@ export function Categories({ data }: { data: any }) {
   return (
     <div className="relative w-full hidden lg:block overflow-x-auto overflow-y-hidden scrollbar-hide">
       {/* Sidebar for viewing all categories */}
-      <CategoriesSidebar
-        open={isSidebarOpen}
-        onOpenChange={setIsSidebarOpen}
-        data={data}
-      />
+      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
 
       {/* Measure container for category items */}
       <div
@@ -73,7 +69,7 @@ export function Categories({ data }: { data: any }) {
           left: -9999,
         }}
       >
-        {data.map((category: any) => (
+        {data.map((category: CategoriesGetManyOutput[1]) => (
           <div key={category.id}>
             <CategoryDropdown
               category={category}
@@ -90,15 +86,17 @@ export function Categories({ data }: { data: any }) {
         onMouseEnter={() => setIsAnyHovered(true)}
         onMouseLeave={() => setIsAnyHovered(false)}
       >
-        {data.slice(0, visibleCount).map((category: any) => (
-          <div key={category.id}>
-            <CategoryDropdown
-              category={category}
-              isActive={activeCategory === category.slug}
-              isNavigationHovered={isAnyHovered}
-            />
-          </div>
-        ))}
+        {data
+          .slice(0, visibleCount)
+          .map((category: CategoriesGetManyOutput[1]) => (
+            <div key={category.id}>
+              <CategoryDropdown
+                category={category}
+                isActive={activeCategory === category.slug}
+                isNavigationHovered={isAnyHovered}
+              />
+            </div>
+          ))}
 
         <div ref={viewAllRef} className="shrink-0">
           <Button

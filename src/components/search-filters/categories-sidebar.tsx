@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -8,6 +7,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { CategoriesGetManyOutput } from "@/modules/categories/types";
+import { useTRPC } from "@/trpc/client";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -15,16 +17,19 @@ import { useState } from "react";
 export function CategoriesSidebar({
   open,
   onOpenChange,
-  data,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  data: any[];
 }) {
-  const router = useRouter();
+  const trpc = useTRPC();
+  const { data } = useQuery(trpc.categories.getMany.queryOptions());
 
-  const [parentCategories, setParentCategories] = useState<any[] | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+  const router = useRouter();
+  const [parentCategories, setParentCategories] =
+    useState<CategoriesGetManyOutput | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<
+    CategoriesGetManyOutput[1] | null
+  >(null);
 
   const currentCategories = selectedCategory
     ? selectedCategory.subcategories || []
@@ -36,9 +41,9 @@ export function CategoriesSidebar({
     onOpenChange(open);
   };
 
-  const handleCategoryClick = (category: any) => {
+  const handleCategoryClick = (category: CategoriesGetManyOutput[1]) => {
     if (category.subcategories && category.subcategories.length > 0) {
-      setParentCategories([category.subcategories]);
+      setParentCategories(category.subcategories as CategoriesGetManyOutput);
       setSelectedCategory(category);
     } else {
       if (parentCategories && selectedCategory) {
@@ -88,7 +93,7 @@ export function CategoriesSidebar({
             </button>
           )}
 
-          {currentCategories.map((category: any) => (
+          {currentCategories.map((category: CategoriesGetManyOutput[1]) => (
             <button
               key={category.slug}
               className="w-full text-left p-4 hover:bg-black hover:text-white flex items-center text-base font-medium justify-between cursor-pointer group"
