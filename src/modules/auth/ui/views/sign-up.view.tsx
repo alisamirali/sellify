@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Poppins } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -32,6 +32,7 @@ export function SignUpView() {
   const router = useRouter();
 
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const register = useMutation(trpc.auth.register.mutationOptions());
 
   const form = useForm<z.infer<typeof registerSchema>>({
@@ -46,8 +47,11 @@ export function SignUpView() {
 
   const onSubmit = (values: z.infer<typeof registerSchema>) => {
     register.mutate(values, {
-      onSuccess: () => {
+      onSuccess: async () => {
         form.reset();
+
+        await queryClient.invalidateQueries(trpc.auth.session.queryFilter());
+
         router.push("/");
       },
       onError: (error) => {
