@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { CategoriesSidebar } from "@/components/search-filters/categories-sidebar";
@@ -7,28 +6,18 @@ import { Input } from "@/components/ui/input";
 import { ListFilterPlusIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 
-export function SearchInput({
-  data,
-  disabled,
-}: {
-  data: any;
-  disabled?: boolean;
-}) {
+export function SearchInput({ disabled }: { disabled?: boolean }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="flex items-center gap-2 w-full">
-      <CategoriesSidebar
-        data={data}
-        open={isSidebarOpen}
-        onOpenChange={setIsSidebarOpen}
-      />
+      <CategoriesSidebar open={isSidebarOpen} onOpenChange={setIsSidebarOpen} />
 
-      <div className="w-full flex items-center gap-1 border px-3 rounded-md">
+      <div className="w-full flex items-center gap-1 border px-3 rounded-md bg-white">
         <SearchIcon className="size-6 text-neutral-500" />
         <Input
           disabled={disabled}
-          className="border-none outline-none"
+          className="border-none outline-none bg-transparent"
           placeholder="Search products..."
         />
       </div>

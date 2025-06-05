@@ -19,7 +19,12 @@
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-scroll-area": "^1.2.9",
     "@radix-ui/react-slot": "^1.2.3",
+    "@tanstack/react-query": "^5.72.1",
+    "@trpc/client": "^11.0.3",
+    "@trpc/server": "^11.0.3",
+    "@trpc/tanstack-react-query": "^11.0.3",
     "class-variance-authority": "^0.7.1",
+    "client-only": "^0.0.1",
     "clsx": "^2.1.1",
     "graphql": "^16.11.0",
     "lucide-react": "^0.511.0",
@@ -27,7 +32,10 @@
     "payload": "^3.40.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.3.0"
+    "server-only": "^0.0.1",
+    "superjson": "^2.2.2",
+    "tailwind-merge": "^3.3.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
