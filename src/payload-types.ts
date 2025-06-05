@@ -59,6 +59,7 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
+  username?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -79,6 +80,15 @@ export interface Media {
   focalX?: number | null;
   focalY?: number | null;
 }
+
+export interface Category {
+  name: string;
+  slug: string;
+  color?: string;
+  parent?: string | Category; // ID or populated object depending on query
+  subcategories?: string[] | Category[]; // IDs or populated objects depending on query
+}
+
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
