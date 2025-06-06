@@ -7,5 +7,9 @@ export default function Home() {
   const trpc = useTRPC();
   const { data } = useQuery(trpc.auth.session.queryOptions());
 
-  return <div className="p-6">{JSON.stringify(data?.user, null, 2)}</div>;
+  return (
+    <div className="p-6">
+      Current user: {JSON.stringify(data?.user?.username, null, 2)}
+    </div>
+  );
 }
