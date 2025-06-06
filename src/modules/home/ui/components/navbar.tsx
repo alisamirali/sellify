@@ -1,8 +1,8 @@
 "use client";
 
-import { MobileSidebar } from "@/components/mobile-sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { MobileSidebar } from "@/modules/home/ui/components/mobile-sidebar";
 import { useTRPC } from "@/trpc/client";
 import { useQuery } from "@tanstack/react-query";
 import { MenuIcon } from "lucide-react";
