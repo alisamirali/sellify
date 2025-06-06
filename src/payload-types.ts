@@ -89,6 +89,21 @@ export interface Category {
   subcategories?: string[] | Category[]; // IDs or populated objects depending on query
 }
 
+export interface Product {
+  name: string;
+  description?: string;
+  price: number;
+  category?: string | Category;
+  image?: string | Media;
+  refundPolicy?:
+    | "30-days"
+    | "14-days"
+    | "7-days"
+    | "3-days"
+    | "1-day"
+    | "no-refund";
+}
+
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
