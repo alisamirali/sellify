@@ -1,7 +1,6 @@
 "use client";
 
 import { DEFAULT_CATEGORY_COLOR } from "@/modules/home/constants";
-import { Breadcrumbs } from "@/modules/home/ui/components/search-filters/breadcrumbs";
 import { Categories } from "@/modules/home/ui/components/search-filters/categories";
 import { SearchInput } from "@/modules/home/ui/components/search-filters/search-input";
 import { useTRPC } from "@/trpc/client";
@@ -22,13 +21,6 @@ export function SearchFilters() {
 
   const activeCategoryColor =
     activeCategoryData?.color || DEFAULT_CATEGORY_COLOR;
-  const activeCategoryName = activeCategoryData?.name || null;
-
-  const activeSubcategory = params.subcategory as string | undefined;
-  const activeSubcategoryName =
-    activeCategoryData?.subcategories?.find(
-      (subcategory) => subcategory.slug === activeSubcategory
-    )?.name || null;
 
   return (
     <div
@@ -38,12 +30,6 @@ export function SearchFilters() {
       <div className="wrapper flex flex-col gap-4 overflow-hidden">
         <SearchInput />
         <Categories data={data} />
-
-        <Breadcrumbs
-          activeCategory={activeCategory}
-          activeCategoryName={activeCategoryName}
-          activeSubcategoryName={activeSubcategoryName}
-        />
       </div>
     </div>
   );

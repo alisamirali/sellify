@@ -91,6 +91,8 @@ export function Categories({ data }: { data: CategoriesGetManyOutput }) {
         onMouseEnter={() => setIsAnyHovered(true)}
         onMouseLeave={() => setIsAnyHovered(false)}
       >
+        {/* TODO: Hard code all button */}
+
         {data
           .slice(0, visibleCount)
           .map((category: CategoriesGetManyOutput[1]) => (
