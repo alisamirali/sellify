@@ -1,10 +1,6 @@
-import {
-  ProductList,
-  ProductListSkeleton,
-} from "@/modules/products/ui/components/product-list";
+import { ProductListViews } from "@/modules/products/ui/views/product-list.views";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { Suspense } from "react";
 
 type SubcategoryPageProps = {
   params: Promise<{
@@ -36,9 +32,7 @@ export default async function SubcategoryPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <Suspense fallback={<ProductListSkeleton />}>
-        <ProductList category={subcategory} />
-      </Suspense>
+      <ProductListViews category={subcategory} />
     </HydrationBoundary>
   );
 }
