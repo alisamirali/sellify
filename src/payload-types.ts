@@ -104,6 +104,11 @@ export interface Product {
     | "no-refund";
 }
 
+export interface Tags {
+  name: string;
+  products?: string[] | Product[];
+}
+
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".

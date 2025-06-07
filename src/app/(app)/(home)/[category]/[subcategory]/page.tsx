@@ -10,17 +10,27 @@ type SubcategoryPageProps = {
   params: Promise<{
     subcategory: string;
   }>;
+  searchParams: Promise<{
+    minPrice?: string | undefined;
+    maxPrice?: string | undefined;
+    tags?: string[] | undefined;
+  }>;
 };
 
 export default async function SubcategoryPage({
   params,
+  searchParams,
 }: SubcategoryPageProps) {
   const { subcategory } = await params;
+  const { minPrice, maxPrice, tags } = await searchParams;
   const queryClient = getQueryClient();
 
   void queryClient.prefetchQuery(
     trpc.products.getMany.queryOptions({
       category: subcategory,
+      minPrice,
+      maxPrice,
+      tags,
     })
   );
 
