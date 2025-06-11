@@ -8,9 +8,15 @@ import { Suspense } from "react";
 
 type ProductListViewsProps = {
   category?: string;
+  tenantSlug?: string;
+  narrowView?: boolean;
 };
 
-export function ProductListViews({ category }: ProductListViewsProps) {
+export function ProductListViews({
+  category,
+  tenantSlug,
+  narrowView,
+}: ProductListViewsProps) {
   return (
     <div className="py-8 flex flex-col gap-4 mx-auto wrapper px-6">
       <div className="flex flex-col lg:flex-row lg:items-center gap-y-2 lg:gap-y-0 justify-between">
@@ -24,8 +30,12 @@ export function ProductListViews({ category }: ProductListViewsProps) {
         </div>
 
         <div className="lg:col-span-4 xl:col-span-6">
-          <Suspense fallback={<ProductListSkeleton />}>
-            <ProductList category={category} />
+          <Suspense fallback={<ProductListSkeleton narrowView={narrowView} />}>
+            <ProductList
+              category={category}
+              tenantSlug={tenantSlug}
+              narrowView={narrowView}
+            />
           </Suspense>
         </div>
       </div>

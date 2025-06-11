@@ -1,13 +1,15 @@
+import { generateTenantUrl } from "@/lib/utils";
 import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type ProductCardProps = {
   id: string;
   name: string;
   imageUrl?: string | null;
-  authorName: string;
-  authorImageUrl?: string | null;
+  tenantSlug: string;
+  tenantImageUrl?: string | null;
   reviewRating: number;
   reviewCount: number;
   price: number;
@@ -17,12 +19,21 @@ export function ProductCard({
   id,
   name,
   imageUrl,
-  authorName,
-  authorImageUrl,
+  tenantSlug,
+  tenantImageUrl,
   reviewRating,
   reviewCount,
   price,
 }: ProductCardProps) {
+  const router = useRouter();
+
+  const handleUserClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    router.push(generateTenantUrl(tenantSlug));
+  };
+
   return (
     <Link href={`/products/${id}`}>
       <div className="hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border rounded-md bg-white overflow-hidden h-full flex flex-col transition-shadow">
@@ -37,19 +48,19 @@ export function ProductCard({
 
         <div className="p-4 border-y flex flex-col gap-3 flex-1">
           <h2 className="text-lg font-medium line-clamp-4">{name}</h2>
-          {/* TODO: Add author info */}
-          <div className="flex items-center gap-2" onClick={() => {}}>
-            {authorImageUrl && (
+
+          <div className="flex items-center gap-1.5" onClick={handleUserClick}>
+            {tenantImageUrl && (
               <Image
-                alt={authorName}
-                src={authorImageUrl}
-                width={16}
-                height={16}
-                className="rounded-full border shrink-0 size-[16px]"
+                alt={tenantSlug}
+                src={tenantImageUrl}
+                width={20}
+                height={20}
+                className="rounded-full shrink-0 size-[20px]"
               />
             )}
 
-            <p className="text-sm underline font-medium">{authorName}</p>
+            <p className="text-sm underline font-medium">{tenantSlug}</p>
           </div>
 
           {reviewCount > 0 && (
