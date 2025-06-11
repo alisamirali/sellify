@@ -21,12 +21,13 @@ export default async function CategoryPage({
   const { minPrice, maxPrice, tags } = await searchParams;
 
   const queryClient = getQueryClient();
-  void queryClient.prefetchQuery(
-    trpc.products.getMany.queryOptions({
+  void queryClient.prefetchInfiniteQuery(
+    trpc.products.getMany.infiniteQueryOptions({
       category,
       minPrice,
       maxPrice,
       tags,
+      limit: 10,
     })
   );
 

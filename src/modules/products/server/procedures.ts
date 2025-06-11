@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { sortValues } from "@/modules/products/hooks/use-product-filters";
 import { Media } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
@@ -59,7 +60,7 @@ export const productsRouter = createTRPCRouter({
               equals: input.category,
             },
           },
-        });
+        } as any);
 
         const formattedData = categoriesData.docs.map((doc) => ({
           ...doc,
@@ -98,7 +99,7 @@ export const productsRouter = createTRPCRouter({
         sort,
         page: input.cursor,
         limit: input.limit,
-      });
+      } as any);
 
       return {
         ...data,
