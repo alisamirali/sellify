@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 
 export const categoriesRouter = createTRPCRouter({
@@ -12,7 +13,7 @@ export const categoriesRouter = createTRPCRouter({
         },
       },
       sort: "name",
-    });
+    } as any);
 
     const formattedData = data.docs.map((doc) => ({
       ...doc,

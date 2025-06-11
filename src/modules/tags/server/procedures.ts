@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { z } from "zod";
 
@@ -14,7 +15,7 @@ export const tagsRouter = createTRPCRouter({
         collection: "tags",
         page: input.cursor,
         limit: input.limit,
-      });
+      } as any);
 
       return data;
     }),

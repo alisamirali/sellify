@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AUTH_COOKIE } from "@/modules/auth/constants";
 import { loginSchema, registerSchema } from "@/modules/auth/schemas";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
@@ -35,14 +36,28 @@ export const authRouter = createTRPCRouter({
         });
       }
 
+      const tenant = await ctx.db.create({
+        collection: "tenants",
+        data: {
+          name: input.username,
+          slug: input.username,
+          stripeAccountId: "test",
+        },
+      } as any);
+
       await ctx.db.create({
         collection: "users",
         data: {
           email: input.email,
           password: input.password,
           username: input.username,
+          tenants: [
+            {
+              tenant: tenant.id,
+            },
+          ],
         },
-      });
+      } as any);
 
       const data = await ctx.db.login({
         collection: "users",
@@ -50,7 +65,7 @@ export const authRouter = createTRPCRouter({
           email: input.email,
           password: input.password,
         },
-      });
+      } as any);
 
       if (!data.token) {
         throw new TRPCError({
