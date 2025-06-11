@@ -16,6 +16,7 @@ export const productsRouter = createTRPCRouter({
         sort: z.enum(sortValues).optional().nullable(),
         cursor: z.number().default(1),
         limit: z.number().default(10),
+        tenantSlug: z.string().optional().nullable(),
       })
     )
     .query(async ({ ctx, input }) => {
@@ -46,6 +47,12 @@ export const productsRouter = createTRPCRouter({
       } else if (input.maxPrice) {
         where.price = {
           less_than_equal: input.maxPrice,
+        };
+      }
+
+      if (input.tenantSlug) {
+        where["tenant.slug"] = {
+          equals: input.tenantSlug,
         };
       }
 
@@ -94,7 +101,7 @@ export const productsRouter = createTRPCRouter({
 
       const data = await ctx.db.find({
         collection: "products",
-        depth: 1,
+        depth: 2,
         where,
         sort,
         page: input.cursor,
@@ -106,6 +113,7 @@ export const productsRouter = createTRPCRouter({
         docs: data.docs.map((doc) => ({
           ...doc,
           image: doc.image as Media | null,
+          tenant: doc.tenant as any & { image?: Media | null },
         })),
       };
     }),

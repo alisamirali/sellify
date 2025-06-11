@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { useProductsFilters } from "@/modules/products/hooks/use-product-filters";
 import {
   ProductCard,
@@ -12,9 +13,15 @@ import { InboxIcon } from "lucide-react";
 
 type ProductListProps = {
   category?: string;
+  tenantSlug?: string;
+  narrowView?: boolean;
 };
 
-export function ProductList({ category }: ProductListProps) {
+export function ProductList({
+  category,
+  tenantSlug,
+  narrowView,
+}: ProductListProps) {
   const { minPrice, maxPrice, tags, sort } = useProductsFilters();
 
   const trpc = useTRPC();
@@ -25,6 +32,7 @@ export function ProductList({ category }: ProductListProps) {
           category,
           minPrice,
           maxPrice,
+          tenantSlug,
           tags,
           sort,
           limit: 10,
@@ -47,7 +55,12 @@ export function ProductList({ category }: ProductListProps) {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div
+        className={cn(
+          "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4",
+          narrowView && "lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
+        )}
+      >
         {data?.pages?.length > 0 &&
           data.pages
             .flatMap((page) => page.docs)
@@ -57,8 +70,8 @@ export function ProductList({ category }: ProductListProps) {
                 id={product.id}
                 name={product.name}
                 imageUrl={product.imageUrl?.url || null}
-                authorName="ali"
-                authorImageUrl={undefined}
+                tenantSlug={product.tenant?.slug || "Unknown"}
+                tenantImageUrl={product.tenant?.image?.url || null}
                 reviewRating={3.5}
                 reviewCount={5}
                 price={product.price}
@@ -82,9 +95,14 @@ export function ProductList({ category }: ProductListProps) {
   );
 }
 
-export function ProductListSkeleton() {
+export function ProductListSkeleton({ narrowView }: { narrowView?: boolean }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+    <div
+      className={cn(
+        "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4",
+        narrowView && "lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-3"
+      )}
+    >
       {Array.from({ length: 10 }).map((_, index) => (
         <ProductCardSkeleton key={index} />
       ))}
