@@ -1,6 +1,7 @@
 "use client";
 
 import { generateTenantUrl } from "@/lib/utils";
+import { CheckoutButton } from "@/modules/checkout/ui/components/checkout-button";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Image from "next/image";
@@ -12,7 +13,7 @@ export function Navbar({ slug }: { slug?: string }) {
 
   return (
     <header className="h-20 border-b bg-white">
-      <nav className="wrapper h-full flex gap-3 items-center font-medium px-6">
+      <nav className="wrapper h-full flex gap-3 items-center justify-between font-medium px-6">
         <Link
           href={generateTenantUrl(slug as string)}
           className="flex items-center gap-1.5"
@@ -28,6 +29,8 @@ export function Navbar({ slug }: { slug?: string }) {
           )}
           <p className="text-xl">{data?.name}</p>
         </Link>
+
+        <CheckoutButton tenantSlug={slug as string} hideIfEmpty />
       </nav>
     </header>
   );
