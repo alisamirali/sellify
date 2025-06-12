@@ -2,6 +2,9 @@
   "name": "sellify",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "author": "Ali Samir",
+  "description": "Anyone can earn their first dollar online. Just start with what you know, see what sticks, and get paid. It's that easy.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
