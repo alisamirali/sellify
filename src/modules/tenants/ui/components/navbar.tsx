@@ -7,7 +7,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 
-export function Navbar({ slug }: { slug?: string }) {
+export function Navbar({ slug }: { slug: string }) {
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.tenants.getOne.queryOptions({ slug }));
 
@@ -15,7 +15,7 @@ export function Navbar({ slug }: { slug?: string }) {
     <header className="h-20 border-b bg-white">
       <nav className="wrapper h-full flex gap-3 items-center justify-between font-medium px-6">
         <Link
-          href={generateTenantUrl(slug as string)}
+          href={generateTenantUrl(slug)}
           className="flex items-center gap-1.5"
         >
           {data?.image?.url && (
