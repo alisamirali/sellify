@@ -42,7 +42,7 @@ export function SearchInput({ disabled }: { disabled?: boolean }) {
 
       {session.data?.user && (
         <Button variant="elevated" asChild>
-          <Link href="/library">
+          <Link href="/library" prefetch>
             <BookmarkCheckIcon />
             Library
           </Link>
