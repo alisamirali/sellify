@@ -1,35 +1,48 @@
 import { useCartStore } from "@/modules/checkout/store/use-cart-store";
+import { useCallback } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 export const useCart = (tenantSlug: string) => {
-  const cartStore = useCartStore();
+  const addProduct = useCartStore((state) => state.addProduct);
+  const removeProduct = useCartStore((state) => state.removeProduct);
+  const clearCart = useCartStore((state) => state.clearCart);
+  const clearAllCarts = useCartStore((state) => state.clearAllCarts);
 
-  const productIds = cartStore.getCartByTenant(tenantSlug);
+  const productIds = useCartStore(
+    useShallow((state) => state.tenantCarts[tenantSlug]?.productIds || [])
+  );
 
-  const toggleProduct = (productId: string) => {
-    if (productIds.includes(productId)) {
-      cartStore.removeProduct(tenantSlug, productId);
-    } else {
-      cartStore.addProduct(tenantSlug, productId);
-    }
-  };
+  const toggleProduct = useCallback(
+    (productId: string) => {
+      if (productIds.includes(productId)) {
+        removeProduct(tenantSlug, productId);
+      } else {
+        addProduct(tenantSlug, productId);
+      }
+    },
+    [removeProduct, addProduct, tenantSlug, productIds]
+  );
 
-  const isProductInCart = (productId: string) => {
-    return productIds.includes(productId);
-  };
+  const isProductInCart = useCallback(
+    (productId: string) => {
+      return productIds.includes(productId);
+    },
+    [productIds]
+  );
 
-  const clearTenantCart = () => {
-    cartStore.clearCart(tenantSlug);
-  };
-
-  const clearAllCarts = () => {
-    cartStore.clearAllCarts();
-  };
+  const clearTenantCart = useCallback(() => {
+    clearCart(tenantSlug);
+  }, [clearCart, tenantSlug]);
 
   return {
-    addProduct: (productId: string) =>
-      cartStore.addProduct(tenantSlug, productId),
-    removeProduct: (productId: string) =>
-      cartStore.removeProduct(tenantSlug, productId),
+    addProduct: useCallback(
+      (productId: string) => addProduct(tenantSlug, productId),
+      [addProduct, tenantSlug]
+    ),
+    removeProduct: useCallback(
+      (productId: string) => removeProduct(tenantSlug, productId),
+      [removeProduct, tenantSlug]
+    ),
     clearCart: clearTenantCart,
     toggleProduct,
     isProductInCart,
