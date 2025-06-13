@@ -3,10 +3,10 @@ import { useCartStore } from "@/modules/checkout/store/use-cart-store";
 export const useCart = (tenantSlug: string) => {
   const cartStore = useCartStore();
 
-  const productsIds = cartStore.getCartByTenant(tenantSlug);
+  const productIds = cartStore.getCartByTenant(tenantSlug);
 
   const toggleProduct = (productId: string) => {
-    if (productsIds.includes(productId)) {
+    if (productIds.includes(productId)) {
       cartStore.removeProduct(tenantSlug, productId);
     } else {
       cartStore.addProduct(tenantSlug, productId);
@@ -14,7 +14,7 @@ export const useCart = (tenantSlug: string) => {
   };
 
   const isProductInCart = (productId: string) => {
-    return productsIds.includes(productId);
+    return productIds.includes(productId);
   };
 
   const clearTenantCart = () => {
@@ -34,7 +34,7 @@ export const useCart = (tenantSlug: string) => {
     toggleProduct,
     isProductInCart,
     clearAllCarts,
-    productsIds,
-    totalItems: productsIds.length,
+    productIds,
+    totalItems: productIds.length,
   };
 };
