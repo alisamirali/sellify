@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type TenantCart = {
-  productsIds: string[];
+  productIds: string[];
 };
 
 type CartState = {
@@ -24,8 +24,8 @@ export const useCartStore = create<CartState>()(
           tenantCarts: {
             ...state.tenantCarts,
             [tenantSlug]: {
-              productsIds: [
-                ...(state.tenantCarts[tenantSlug]?.productsIds || []),
+              productIds: [
+                ...(state.tenantCarts[tenantSlug]?.productIds || []),
                 productId,
               ],
             },
@@ -36,13 +36,13 @@ export const useCartStore = create<CartState>()(
       removeProduct: (tenantSlug, productId) => {
         set((state) => {
           const updatedIds = (
-            state.tenantCarts[tenantSlug]?.productsIds || []
+            state.tenantCarts[tenantSlug]?.productIds || []
           ).filter((id) => id !== productId);
           return {
             tenantCarts: {
               ...state.tenantCarts,
               [tenantSlug]: {
-                productsIds: updatedIds,
+                productIds: updatedIds,
               },
             },
           };
@@ -62,7 +62,7 @@ export const useCartStore = create<CartState>()(
       },
 
       getCartByTenant: (tenantSlug) => {
-        return get().tenantCarts[tenantSlug]?.productsIds || [];
+        return get().tenantCarts[tenantSlug]?.productIds || [];
       },
     }),
     {
