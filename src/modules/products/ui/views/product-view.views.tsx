@@ -6,11 +6,12 @@ import { Progress } from "@/components/ui/progress";
 import { generateTenantUrl } from "@/lib/utils";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { LinkIcon, StarIcon } from "lucide-react";
+import { CheckCheck, LinkIcon, StarIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
+import { toast } from "sonner";
 
 const CartButton = dynamic(
   () =>
@@ -26,6 +27,8 @@ type Props = {
 };
 
 export function ProductView({ productId, tenantSlug }: Props) {
+  const [isCopied, setIsCopied] = useState(false);
+
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(
     trpc.products.getOne.queryOptions({
@@ -36,18 +39,19 @@ export function ProductView({ productId, tenantSlug }: Props) {
   return (
     <div className="wrapper px-6 py-10">
       <div className="border rounded-md bg-white overflow-hidden">
+        {" "}
         <div className="relative aspect-[3.9] border-b">
           <Image
             src={data?.image?.url || "/placeholder.png"}
-            alt={data.image?.alt || "Product Image"}
+            alt={data?.image?.alt || "Product Image"}
             className="object-cover"
             fill
           />
         </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-6">
           <div className="col-span-4">
             <div className="p-6">
+              {" "}
               <h1 className="text-3xl font-medium">{data?.name}</h1>
             </div>
 
@@ -59,11 +63,10 @@ export function ProductView({ productId, tenantSlug }: Props) {
                       style: "currency",
                       currency: "USD",
                       maximumFractionDigits: 0,
-                    }).format(Number(data?.price))}
+                    }).format(Number(data?.price || 0))}
                   </p>
                 </div>
               </div>
-
               <div className="px-6 py-4 flex items-center justify-center lg:border-r">
                 <Link
                   href={generateTenantUrl(tenantSlug)}
@@ -84,18 +87,22 @@ export function ProductView({ productId, tenantSlug }: Props) {
                   </p>
                 </Link>
               </div>
-
               <div className="hidden lg:flex px-6 py-4 items-center justify-center">
-                <div className="flex items-center gap-1">
-                  <StarRating rating={3} />
+                <div className="flex items-center gap-2">
+                  <StarRating rating={data?.reviewRating} />
+                  <p className="text-base font-medium">
+                    ({data?.reviewCount || 0}) ratings
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex lg:hidden px-6 py-4 items-center justify-center border-b">
-              <div className="flex items-center gap-1">
-                <StarRating rating={3} />
-                <p className="text-base font-medium">(5) ratings</p>
+            <div className="flex lg:hidden px-6 py-4 items-center border-b">
+              <div className="flex items-center gap-2">
+                <StarRating rating={data?.reviewRating} />
+                <p className="text-base font-medium">
+                  ({data?.reviewCount || 0}) ratings
+                </p>
               </div>
             </div>
 
@@ -117,23 +124,29 @@ export function ProductView({ productId, tenantSlug }: Props) {
                   <CartButton
                     tenantSlug={tenantSlug}
                     productId={productId}
-                    isPurchased={data.isPurchased}
+                    isPurchased={data?.isPurchased || false}
                   />
-
                   <Button
                     className="size-12"
                     variant="elevated"
-                    onClick={() => {}}
-                    disabled={false}
-                  >
-                    <LinkIcon />
-                  </Button>
-                </div>
+                    onClick={() => {
+                      setIsCopied(true);
+                      navigator.clipboard.writeText(window.location.href);
+                      toast.success("Product link copied to clipboard");
 
+                      setTimeout(() => {
+                        setIsCopied(false);
+                      }, 1000);
+                    }}
+                    disabled={isCopied}
+                  >
+                    {isCopied ? <CheckCheck /> : <LinkIcon />}
+                  </Button>
+                </div>{" "}
                 <p className="text-center font-medium">
                   {data?.refundPolicy === "no-refund"
                     ? "No Refund Policy"
-                    : `${data?.refundPolicy} money back guarantee`}
+                    : `${data?.refundPolicy || "No"} money back guarantee`}
                 </p>
               </div>
 
@@ -142,8 +155,8 @@ export function ProductView({ productId, tenantSlug }: Props) {
                   <h3 className="text-xl font-medium">Ratings</h3>
                   <div className="flex items-center gap-x-1 font-medium">
                     <StarIcon className="size-4 fill-black" />
-                    <p>({5})</p>
-                    <p className="text-base">{5} ratings</p>
+                    <p>({data?.reviewRating})</p>
+                    <p className="text-base">{data?.reviewCount} ratings</p>
                   </div>
                 </div>
 
@@ -153,8 +166,13 @@ export function ProductView({ productId, tenantSlug }: Props) {
                       <div className="font-medium">
                         {stars} {stars === 1 ? "star" : "stars"}
                       </div>
-                      <Progress value={5} className="h-[1lh]" />
-                      <div className="font-medium">{5}%</div>
+                      <Progress
+                        value={data.ratingDistribution[stars]}
+                        className="h-[1lh]"
+                      />
+                      <div className="font-medium">
+                        {data.ratingDistribution[stars]}%
+                      </div>
                     </Fragment>
                   ))}
                 </div>

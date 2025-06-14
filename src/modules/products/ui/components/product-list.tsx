@@ -72,8 +72,8 @@ export function ProductList({
                 imageUrl={product.imageUrl?.url || null}
                 tenantSlug={product.tenant?.slug || "Unknown"}
                 tenantImageUrl={product.tenant?.image?.url || null}
-                reviewRating={3.5}
-                reviewCount={5}
+                reviewRating={product.reviewRating}
+                reviewCount={product.reviewCount}
                 price={product.price}
               />
             ))}
