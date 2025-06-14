@@ -1,9 +1,60 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Media } from "@/payload-types";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 export const libraryRouter = createTRPCRouter({
+  getOne: protectedProcedure
+    .input(
+      z.object({
+        productId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const ordersData = await ctx.db.find({
+        collection: "orders",
+        limit: 1,
+        pagination: false,
+        where: {
+          and: [
+            {
+              product: {
+                equals: input.productId,
+              },
+            },
+            {
+              user: {
+                equals: ctx.session.user.id,
+              },
+            },
+          ],
+        },
+      } as any);
+
+      const order = ordersData.docs[0];
+
+      if (!order) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Order not found for this product",
+        });
+      }
+
+      const product = await ctx.db.findByID({
+        collection: "products",
+        id: input.productId,
+      });
+
+      if (!product) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product not found",
+        });
+      }
+
+      return product;
+    }),
   getMany: protectedProcedure
     .input(
       z.object({
