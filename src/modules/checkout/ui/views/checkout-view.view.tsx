@@ -6,7 +6,7 @@ import { useCheckoutStates } from "@/modules/checkout/hooks/use-checkout-states"
 import { CheckoutItem } from "@/modules/checkout/ui/components/checkout-item";
 import { CheckoutSidebar } from "@/modules/checkout/ui/components/checkout-sidebar";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { InboxIcon, LoaderIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -22,6 +22,7 @@ export function CheckoutView({ tenantSlug }: CheckoutViewProps) {
   const router = useRouter();
 
   const trpc = useTRPC();
+  const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery(
     trpc.checkout.getProducts.queryOptions({
       ids: productIds,
@@ -54,9 +55,18 @@ export function CheckoutView({ tenantSlug }: CheckoutViewProps) {
 
       clearCart();
 
-      router.push("/products");
+      queryClient.invalidateQueries(trpc.library.getMany.infiniteQueryFilter());
+      router.push("/library");
     }
-  }, [success, clearCart, router, setSuccess, setCancel]);
+  }, [
+    success,
+    clearCart,
+    router,
+    setSuccess,
+    setCancel,
+    queryClient,
+    trpc.library.getMany,
+  ]);
 
   useEffect(() => {
     if (error?.data?.code === "NOT_FOUND") {
