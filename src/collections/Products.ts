@@ -1,7 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { isSuperAdmin } from "@/lib/access";
 import type { CollectionConfig } from "payload";
 
 const Products: CollectionConfig = {
   slug: "products",
+  access: {
+    create: ({ req }) => {
+      if (isSuperAdmin(req?.user)) return true;
+
+      const tenant = req?.user?.tenants?.[0] as any;
+
+      return Boolean(tenant?.stripeDetailsSubmitted);
+    },
+  },
   admin: {
     useAsTitle: "name",
   },
@@ -45,6 +56,14 @@ const Products: CollectionConfig = {
       type: "relationship",
       relationTo: "tags",
       hasMany: true,
+    },
+    {
+      name: "content",
+      type: "textarea",
+      admin: {
+        description:
+          "Additional content or details about the product. (Supports Markdown)",
+      },
     },
   ],
 };
