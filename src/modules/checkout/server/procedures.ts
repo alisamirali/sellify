@@ -151,7 +151,7 @@ export const checkoutRouter = createTRPCRouter({
       }
 
       const totalPrice = data.docs.reduce((acc, product) => {
-        const price = Number(product.price);
+        const price = Number((product as { price: number })?.price);
 
         return acc + (isNaN(price) ? 0 : price);
       }, 0);
@@ -161,8 +161,11 @@ export const checkoutRouter = createTRPCRouter({
         totalPrice,
         docs: data.docs.map((doc) => ({
           ...doc,
-          image: doc.image as Media | null,
-          tenant: doc.tenant as any & { image?: Media | null },
+          image: "image" in doc ? (doc.image as Media | null) : null,
+          tenant:
+            "tenant" in doc
+              ? (doc.tenant as any & { image?: Media | null })
+              : null,
         })),
       };
     }),

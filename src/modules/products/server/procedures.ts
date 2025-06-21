@@ -185,24 +185,34 @@ export const productsRouter = createTRPCRouter({
 
         const formattedData = categoriesData.docs.map((doc) => ({
           ...doc,
-          subcategories: (doc?.subcategories?.docs ?? []).map((doc: any) => ({
-            ...doc,
-            subcategories: undefined,
-          })),
+          subcategories:
+            doc &&
+            "subcategories" in doc &&
+            Array.isArray((doc as any)?.subcategories?.docs)
+              ? (doc as any).subcategories.docs.map((subDoc: any) => ({
+                  ...subDoc,
+                  subcategories: undefined,
+                }))
+              : [],
         }));
 
         const subcategories = [];
         const parentCategory = formattedData[0];
+        const parentCategoryDoc = categoriesData.docs[0];
 
-        if (parentCategory) {
+        if (
+          parentCategory &&
+          parentCategoryDoc &&
+          typeof (parentCategoryDoc as any).slug === "string"
+        ) {
           subcategories.push(
             ...parentCategory.subcategories?.map(
-              (subcategory) => subcategory.slug
+              (subcategory: any) => subcategory.slug
             )
           );
 
           where["category.slug"] = {
-            in: [parentCategory.slug, ...subcategories],
+            in: [(parentCategoryDoc as any).slug, ...subcategories],
           };
         }
       }
@@ -255,8 +265,11 @@ export const productsRouter = createTRPCRouter({
         ...data,
         docs: dataWithSummarizedReviews.map((doc) => ({
           ...doc,
-          image: doc.image as Media | null,
-          tenant: doc.tenant as any & { image?: Media | null },
+          image: "image" in doc ? (doc.image as Media | null) : null,
+          tenant:
+            "tenant" in doc
+              ? (doc.tenant as any & { image?: Media | null })
+              : undefined,
         })),
       };
     }),
