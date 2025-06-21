@@ -2,6 +2,7 @@
 import { sortValues } from "@/modules/products/hooks/use-product-filters";
 import { Media } from "@/payload-types";
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
+import { TRPCError } from "@trpc/server";
 import { headers as getHeaders } from "next/headers";
 import { Sort, Where } from "payload";
 import { z } from "zod";
@@ -25,6 +26,13 @@ export const productsRouter = createTRPCRouter({
           content: false,
         },
       });
+
+      if (product.isArchived) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product not found",
+        });
+      }
 
       let isPurchased = false;
 
@@ -51,6 +59,7 @@ export const productsRouter = createTRPCRouter({
 
         isPurchased = !!ordersData.docs[0];
       }
+
       const reviews = await ctx.db.find({
         collection: "reviews",
         pagination: false,
@@ -102,6 +111,7 @@ export const productsRouter = createTRPCRouter({
         ratingDistribution,
       };
     }),
+
   getMany: baseProcedure
     .input(
       z.object({
@@ -116,7 +126,11 @@ export const productsRouter = createTRPCRouter({
       })
     )
     .query(async ({ ctx, input }) => {
-      const where: Where = {};
+      const where: Where = {
+        isArchived: {
+          not_equals: true,
+        },
+      };
       let sort: Sort = "-createdAt";
 
       if (input.sort === "curated") {
@@ -149,6 +163,10 @@ export const productsRouter = createTRPCRouter({
       if (input.tenantSlug) {
         where["tenant.slug"] = {
           equals: input.tenantSlug,
+        };
+      } else {
+        where["isPrivate"] = {
+          not_equals: true,
         };
       }
 
