@@ -80,9 +80,9 @@ export const authRouter = createTRPCRouter({
         value: data.token,
         httpOnly: true,
         path: "/",
-        // TODO: Uncomment when deploying to production
-        // sameSite: "none",
-        // domain: "",
+        sameSite: "none",
+        domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN!,
+        secure: process.env.NODE_ENV === "production",
       });
     }),
 
@@ -108,9 +108,9 @@ export const authRouter = createTRPCRouter({
       value: data.token,
       httpOnly: true,
       path: "/",
-      // TODO: Uncomment when deploying to production
-      // sameSite: "none",
-      // domain: "",
+      sameSite: "none",
+      domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN!,
+      secure: process.env.NODE_ENV === "production",
     });
 
     return data;
