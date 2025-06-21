@@ -10,8 +10,9 @@ const Products: CollectionConfig = {
 
       const tenant = req?.user?.tenants?.[0] as any;
 
-      return Boolean(tenant?.stripeDetailsSubmitted);
+      return tenant?.stripeDetailsSubmitted;
     },
+    delete: ({ req }) => isSuperAdmin(req?.user),
   },
   admin: {
     useAsTitle: "name",
@@ -24,7 +25,7 @@ const Products: CollectionConfig = {
     },
     {
       name: "description",
-      type: "textarea",
+      type: "richText",
     },
     {
       name: "price",
@@ -59,10 +60,30 @@ const Products: CollectionConfig = {
     },
     {
       name: "content",
-      type: "textarea",
+      type: "richText",
       admin: {
         description:
           "Additional content or details about the product. (Supports Markdown)",
+      },
+    },
+    {
+      name: "isArchived",
+      label: "Archived",
+      defaultValue: false,
+      type: "checkbox",
+      admin: {
+        description:
+          "Mark this product as archived. It will not be visible to customers.",
+      },
+    },
+    {
+      name: "isPrivate",
+      label: "Private",
+      defaultValue: false,
+      type: "checkbox",
+      admin: {
+        description:
+          "Mark this product as private. It will not be visible to customers, but can be accessed via direct link.",
       },
     },
   ],

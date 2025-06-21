@@ -34,6 +34,11 @@ export const checkoutRouter = createTRPCRouter({
                 equals: input.tenantSlug,
               },
             },
+            {
+              isArchived: {
+                not_equals: true,
+              },
+            },
           ],
         },
       });
@@ -64,8 +69,6 @@ export const checkoutRouter = createTRPCRouter({
           message: "Tenant not found",
         });
       }
-
-      // TODO: Throw error if stripe details not submitted
 
       const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
         products.docs.map((product) => ({
@@ -110,6 +113,7 @@ export const checkoutRouter = createTRPCRouter({
         url: checkout.url,
       };
     }),
+
   getProducts: baseProcedure
     .input(
       z.object({
@@ -121,9 +125,18 @@ export const checkoutRouter = createTRPCRouter({
         collection: "products",
         depth: 2,
         where: {
-          id: {
-            in: input.ids,
-          },
+          and: [
+            {
+              id: {
+                in: input.ids,
+              },
+            },
+            {
+              isArchived: {
+                not_equals: true,
+              },
+            },
+          ],
         },
       } as any);
 
