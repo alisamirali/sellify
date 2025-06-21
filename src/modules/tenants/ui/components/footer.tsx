@@ -13,7 +13,10 @@ export function Footer() {
       <div className="wrapper px-6 flex justify-center items-center gap-2">
         <span className="text-sm text-black">Powered by: </span>
 
-        <Link href="/" className="flex items-center">
+        <Link
+          href={process.env.NEXT_PUBLIC_APP_URL!}
+          className="flex items-center"
+        >
           <span className={cn(poppins.className, "text-xl font-semibold")}>
             sellify<span className="text-pink-400">.</span>
           </span>
