@@ -1,16 +1,15 @@
 import { ProductListViews } from "@/modules/products/ui/views/product-list.views";
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import { SearchParams } from "nuqs";
+
+export const dynamic = "force-dynamic"; // Force dynamic rendering for this page
 
 type Props = {
-  searchParams: Promise<SearchParams>;
   params: Promise<{ slug: string }>;
 };
 
-export default async function TenantPage({ searchParams, params }: Props) {
+export default async function TenantPage({ params }: Props) {
   const { slug } = await params;
-  const { minPrice, maxPrice, tags } = await searchParams;
 
   const queryClient = getQueryClient();
   void queryClient.prefetchInfiniteQuery(

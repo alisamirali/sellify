@@ -2,6 +2,8 @@ import { ProductListViews } from "@/modules/products/ui/views/product-list.views
 import { getQueryClient, trpc } from "@/trpc/server";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
+export const dynamic = "force-dynamic"; // Force dynamic rendering for this page
+
 type SubcategoryPageProps = {
   params: Promise<{
     subcategory: string;
