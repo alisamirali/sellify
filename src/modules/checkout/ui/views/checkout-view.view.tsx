@@ -101,19 +101,30 @@ export function CheckoutView({ tenantSlug }: CheckoutViewProps) {
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-16">
         <div className="lg:col-span-4">
           <div className="border rounded-md overflow-hidden bg-white">
-            {data?.docs.map((product, index) => (
-              <CheckoutItem
-                key={product.id}
-                isLast={index === data.docs.length - 1}
-                imageUrl={product.image?.url}
-                name={product.name}
-                productUrl={`${generateTenantUrl(product.tenant.slug)}/products/${product.id}`}
-                tenantUrl={generateTenantUrl(product.tenant.slug)}
-                tenantName={product.tenant.name}
-                price={product.price}
-                onRemove={() => removeProduct(product.id)}
-              />
-            ))}
+            {data?.docs.map((product, index) => {
+              // Ensure product has the expected properties
+              const typedProduct = product as {
+                id: string;
+                name: string;
+                price: number;
+                image?: { url?: string } | null;
+                tenant: { slug: string; name: string };
+              };
+
+              return (
+                <CheckoutItem
+                  key={typedProduct.id}
+                  isLast={index === data.docs.length - 1}
+                  imageUrl={typedProduct.image?.url}
+                  name={typedProduct.name}
+                  productUrl={`${generateTenantUrl(typedProduct.tenant.slug)}/products/${typedProduct.id}`}
+                  tenantUrl={generateTenantUrl(typedProduct.tenant.slug)}
+                  tenantName={typedProduct.tenant.name}
+                  price={typedProduct.price}
+                  onRemove={() => removeProduct(typedProduct.id)}
+                />
+              );
+            })}
           </div>
         </div>
 
